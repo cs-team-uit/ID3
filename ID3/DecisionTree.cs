@@ -59,15 +59,15 @@
            {
                double result;
                int CountPositives = 0;
-               int[] CountPositivesA = new int[A.Value.Count]; int[] CountNegativeA = new int[A.Value.Count]; int Col = Attributes.IndexOf(A);
-               for (int i = 0; i < A.Value.Count; i++)
+               int[] CountPositivesA = new int[A.LValue.Count]; int[] CountNegativeA = new int[A.LValue.Count]; int Col = Attributes.IndexOf(A);
+               for (int i = 0; i < A.LValue.Count; i++)
                {
                    CountPositivesA[i] = 0;
                    CountNegativeA[i] = 0;
                }
                for (int i = 0; i < Examples.Count; i++)
                {
-                   int j = A.Value.IndexOf(Examples[i][Col].ToString()); 
+                   int j = A.LValue.IndexOf(Examples[i][Col].ToString()); 
                    if (Examples[i][Examples[0].Count - 1] == "yes")
                    {
                        CountPositives++;
@@ -78,7 +78,7 @@
                        CountNegativeA[j]++;
                    }
                }
-               result = GetEntropy(CountPositives, Examples.Count - CountPositives); for (int i = 0; i < A.Value.Count; i++)
+               result = GetEntropy(CountPositives, Examples.Count - CountPositives); for (int i = 0; i < A.LValue.Count; i++)
                {
                    double RateValue = (double)(CountPositivesA[i] + CountNegativeA[i]) /
                    Examples.Count;
@@ -109,12 +109,12 @@
                Attribute BestAttribute = GetBestAttribute(Examples, Attribute, bestat);
                int LocationBA = Attributes.IndexOf(BestAttribute);
                TreeNode Root = new TreeNode(BestAttribute);
-               for (int i = 0; i < BestAttribute.Value.Count; i++)
+               for (int i = 0; i < BestAttribute.LValue.Count; i++)
                {
                    List<List<string>> Examplesvi = new List<List<string>>();
                    for (int j = 0; j < Examples.Count; j++)
                    {
-                       if (Examples[j][LocationBA].ToString() == BestAttribute.Value[i].ToString())
+                       if (Examples[j][LocationBA].ToString() == BestAttribute.Value[i].ToString()) 
                            Examplesvi.Add(Examples[j]);
                    }
                    if (Examplesvi.Count == 0)
@@ -126,7 +126,8 @@
                    {
                        Solution += "\n";
                        Attribute.Remove(BestAttribute);
-                       Root.AddNode(ID3(Examplesvi, Attribute, BestAttribute.Value[i]));
+                       //Root.AddNode(ID3(Examplesvi, Attribute, BestAttribute.Value[i]));
+                       Root.AddNode(ID3(Examplesvi, Attribute, BestAttribute.Value[i].ToString()));
                    }
                }
                return Root;
@@ -189,16 +190,16 @@
             }
             public void SearchRule(TreeNode Rule) 
             {
-                if (Rule.Attributes.Value.Count != 0) 
+                if (Rule.Attributes.LValue.Count != 0) 
                 {
                     string temp1="";
                     Solution1 += Rule.Attributes.Name + " = ";
                     temp1 += Solution1+ " ";
-                    for (int i = 0; i < Rule.Attributes.Value.Count; i++)
+                    for (int i = 0; i < Rule.Attributes.LValue.Count; i++)
                     {
                         string temp2 = "";
                         temp2 = temp1 + Rule.Attributes.Value[i] + ", "; 
-                        if (Rule.Childs[i].Attributes.Value.Count == 0) 
+                        if (Rule.Childs[i].Attributes.LValue.Count == 0) 
                         {
                             RuleCount++;
                             Solution1 = temp2 + "} THEN {"+Rule.Childs[i].Attributes.Label+"}";
@@ -206,7 +207,7 @@
                         }
                         else
                         {
-                            if (Rule.Attributes.Value.Count == 0) 
+                            if (Rule.Attributes.LValue.Count == 0) 
                             {
                                 SearchRule(Rule.Childs[i]); }
                             else
@@ -230,12 +231,12 @@
                 int test = 0; 
                 string temp; 
                 temp = "No";
-                for (int i = 0; i < tree.Attributes.Value.Count; i++)
+                for (int i = 0; i < tree.Attributes.LValue.Count; i++)
                 {
                     if (tree.Childs[i].Attributes.Label == temp)
                             test++;
                 }
-                if ((test > 1) && (test == tree.Attributes.Value.Count)) 
+                if ((test > 1) && (test == tree.Attributes.LValue.Count)) 
                     return true;
                 else
                     return false;
@@ -245,12 +246,12 @@
                 int test=0;
                 string temp;
                 temp = "Yes";
-                for (int i = 0; i < tree.Attributes.Value.Count; i++) 
+                for (int i = 0; i < tree.Attributes.LValue.Count; i++) 
                 {
                     if (tree.Childs[i].Attributes.Label == temp)
                         test++; 
                 }
-                if ((test>1)&&(test == tree.Attributes.Value.Count)) 
+                if ((test>1)&&(test == tree.Attributes.LValue.Count)) 
                     return true;
                 else
                     return false;
@@ -258,13 +259,13 @@
             public void DeleteTree(TreeNode tree) // hàm làm cây rỗng. 
             {
                 tree.Attributes.Name=""; //tree.Attributes.Label=null; 
-                tree.Attributes.Value.Clear();
+                tree.Attributes.LValue.Clear();
             }
             public void OptimizeTree(TreeNode tree) 
             {
-                for (int i = 0; i < tree.Attributes.Value.Count; i++) 
+                for (int i = 0; i < tree.Attributes.LValue.Count; i++) 
                 {
-                    if (tree.Attributes.Value.Count > 1) 
+                    if (tree.Attributes.LValue.Count > 1) 
                     {
                         if (CheckAllLabelPositive(tree)) 
                         {
